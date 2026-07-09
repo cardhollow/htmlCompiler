@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <title>HTML Playground</title>
+
 <style>
-html, body{
+html,body{
     margin:0;
     height:100%;
+    overflow:hidden;
     font-family:sans-serif;
 }
 
@@ -23,14 +25,9 @@ button{
     cursor:pointer;
 }
 
-textarea{
+#editor{
     width:100%;
-    height:calc(100% - 65px);
-    box-sizing:border-box;
-    resize:none;
-    font-family:monospace;
-    font-size:14px;
-    padding:10px;
+    height:calc(100vh - 65px);
 }
 </style>
 </head>
@@ -41,7 +38,42 @@ textarea{
     <button id="debug">🐞 Debug</button>
 </div>
 
-<textarea id="code"><!DOCTYPE html>
+<div id="editor"></div>
+
+<script src="ace.js"></script>
+<script src="theme-monokai.js"></script>
+<script src="mode-html.js"></script>
+<script src="worker-html.js"></script>
+
+<script src="ext-language_tools.js"></script>
+<script src="ext-searchbox.js"></script>
+<script src="ext-beautify.js"></script>
+<script src="ext-statusbar.js"></script>
+
+<script src="snippets/html.js"></script>
+
+<script>
+
+// Tell Ace where the files are
+ace.config.set("basePath", ".");
+ace.config.setModuleUrl("ace/mode/html_worker","worker-html.js");
+ace.config.setModuleUrl("ace/snippets/html","snippets/html.js");
+
+const editor = ace.edit("editor");
+
+editor.setTheme("ace/theme/monokai");
+editor.session.setMode("ace/mode/html");
+
+editor.setOptions({
+    fontSize:15,
+    wrap:true,
+    useWorker:true,
+    enableBasicAutocompletion:true,
+    enableLiveAutocompletion:true,
+    enableSnippets:true
+});
+
+editor.setValue(`<!DOCTYPE html>
 <html>
 <head>
 <title>Test</title>
@@ -52,15 +84,14 @@ textarea{
 
 <script>
 console.log("Hello!");
-</script>
+<\/script>
 
 </body>
-</html></textarea>
+</html>`,-1);
 
-<script>
 function run(debug=false){
 
-    let code=document.getElementById("code").value;
+    let code=editor.getValue();
 
     if(debug){
 
@@ -82,9 +113,21 @@ eruda.init();
     window.open("runner.html","_blank");
 }
 
-run.onclick=()=>{};
 document.getElementById("run").onclick=()=>run(false);
 document.getElementById("debug").onclick=()=>run(true);
+
+// Ctrl+Shift+F to beautify
+editor.commands.addCommand({
+    name:"beautify",
+    bindKey:{
+        win:"Ctrl-Shift-F",
+        mac:"Command-Shift-F"
+    },
+    exec:function(editor){
+        ace.require("ace/ext/beautify").beautify(editor.session);
+    }
+});
+
 </script>
 
 </body>
