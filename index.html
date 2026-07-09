@@ -8,28 +8,45 @@
 html, body {
     margin: 0;
     height: 100%;
+    font-family: sans-serif;
+}
+
+.toolbar {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+}
+
+button {
+    flex: 1;
+    height: 45px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
 textarea {
     width: 100%;
-    height: calc(100% - 50px);
+    height: calc(100% - 65px);
     box-sizing: border-box;
+    resize: none;
     font-family: monospace;
     font-size: 14px;
-}
-
-button {
-    width: 100%;
-    height: 50px;
+    padding: 10px;
 }
 </style>
 </head>
 <body>
 
-<button id="run">Run in New Tab</button>
+<div class="toolbar">
+    <button id="run">▶ Run</button>
+    <button id="debug">🐞 Debug (Eruda)</button>
+</div>
 
 <textarea id="code"><!DOCTYPE html>
 <html>
+<head>
+<title>Test</title>
+</head>
 <body>
 
 <h1>Hello!</h1>
@@ -42,15 +59,35 @@ console.log("Running...");
 </html></textarea>
 
 <script>
-document.getElementById("run").onclick = () => {
-    const code = document.getElementById("code").value;
+function openCode(debug = false) {
+    let code = document.getElementById("code").value;
 
-    const win = window.open();
+    if (debug) {
+        const eruda = `
+<script src="https://cdn.jsdelivr.net/npm/eruda"><\/script>
+<script>
+eruda.init();
+<\/script>
+`;
 
-    win.document.open();
-    win.document.write(code);
-    win.document.close();
-};
+        if (/<\/body>/i.test(code)) {
+            code = code.replace(/<\/body>/i, eruda + "</body>");
+        } else {
+            code += eruda;
+        }
+    }
+
+    const blob = new Blob([code], {
+        type: "text/html"
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    window.open(url, "_blank");
+}
+
+document.getElementById("run").onclick = () => openCode(false);
+document.getElementById("debug").onclick = () => openCode(true);
 </script>
 
 </body>
