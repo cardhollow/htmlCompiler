@@ -3,34 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <title>HTML Playground</title>
+
 <style>
-html, body {
-    margin: 0;
-    height: 100%;
-    font-family: sans-serif;
+html, body{
+    margin:0;
+    height:100%;
+    font-family:sans-serif;
 }
 
-.toolbar {
-    display: flex;
-    gap: 10px;
-    padding: 10px;
+.toolbar{
+    display:flex;
+    gap:10px;
+    padding:10px;
 }
 
-button {
-    flex: 1;
-    height: 45px;
-    font-size: 16px;
-    cursor: pointer;
+button{
+    flex:1;
+    height:45px;
+    font-size:16px;
+    cursor:pointer;
 }
 
-textarea {
-    width: 100%;
-    height: calc(100% - 65px);
-    box-sizing: border-box;
-    resize: none;
-    font-family: monospace;
-    font-size: 14px;
-    padding: 10px;
+textarea{
+    width:100%;
+    height:calc(100% - 65px);
+    box-sizing:border-box;
+    resize:none;
+    font-family:monospace;
+    font-size:14px;
+    padding:10px;
 }
 </style>
 </head>
@@ -38,7 +39,7 @@ textarea {
 
 <div class="toolbar">
     <button id="run">▶ Run</button>
-    <button id="debug">🐞 Debug (Eruda)</button>
+    <button id="debug">🐞 Debug</button>
 </div>
 
 <textarea id="code"><!DOCTYPE html>
@@ -51,42 +52,40 @@ textarea {
 <h1>Hello!</h1>
 
 <script>
-console.log("Running...");
+console.log("Hello!");
 </script>
 
 </body>
 </html></textarea>
 
 <script>
-function openCode(debug = false) {
-    let code = document.getElementById("code").value;
+function run(debug=false){
 
-    if (debug) {
-        const eruda = `
+    let code=document.getElementById("code").value;
+
+    if(debug){
+
+        const eruda=`
 <script src="https://cdn.jsdelivr.net/npm/eruda"><\/script>
 <script>
 eruda.init();
 <\/script>
 `;
 
-        if (/<\/body>/i.test(code)) {
-            code = code.replace(/<\/body>/i, eruda + "</body>");
-        } else {
-            code += eruda;
-        }
+        if(code.match(/<\/body>/i))
+            code=code.replace(/<\/body>/i,eruda+"</body>");
+        else
+            code+=eruda;
     }
 
-    const blob = new Blob([code], {
-        type: "text/html"
-    });
+    sessionStorage.setItem("playground_code",code);
 
-    const url = URL.createObjectURL(blob);
-
-    window.open(url, "_blank");
+    window.open("runner.html","_blank");
 }
 
-document.getElementById("run").onclick = () => openCode(false);
-document.getElementById("debug").onclick = () => openCode(true);
+run.onclick=()=>{};
+document.getElementById("run").onclick=()=>run(false);
+document.getElementById("debug").onclick=()=>run(true);
 </script>
 
 </body>
