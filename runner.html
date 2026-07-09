@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Runner</title>
+</head>
+<body>
+
+Loading...
+
+<script>
+const code=sessionStorage.getItem("playground_code");
+
+if(!code){
+    document.body.innerHTML="<h2>No code found.</h2>";
+}else{
+    document.open();
+    document.write(code);
+    document.close();
+}
+</script>
+
+</body>
+</html>
