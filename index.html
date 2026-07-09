@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML Playground</title>
+
+<style>
+html, body {
+    margin: 0;
+    height: 100%;
+}
+
+textarea {
+    width: 100%;
+    height: calc(100% - 50px);
+    box-sizing: border-box;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+button {
+    width: 100%;
+    height: 50px;
+}
+</style>
+</head>
+<body>
+
+<button id="run">Run in New Tab</button>
+
+<textarea id="code"><!DOCTYPE html>
+<html>
+<body>
+
+<h1>Hello!</h1>
+
+<script>
+console.log("Running...");
+</script>
+
+</body>
+</html></textarea>
+
+<script>
+document.getElementById("run").onclick = () => {
+    const code = document.getElementById("code").value;
+
+    const win = window.open();
+
+    win.document.open();
+    win.document.write(code);
+    win.document.close();
+};
+</script>
+
+</body>
+</html>
